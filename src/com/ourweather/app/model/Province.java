@@ -2,6 +2,11 @@ package com.ourweather.app.model;
 
 import android.R.integer;
 
+/**
+ * 数据库中省份对应的实体类
+ * @author yue
+ *
+ */
 public class Province {
 	private int id;
 	private String province_Name;

@@ -1,5 +1,10 @@
 package com.ourweather.app.model;
 
+/**
+ * 数据库中县城表对应的实体类
+ * @author yue
+ *
+ */
 public class County {
 	private int id;
 	private String county_Name;

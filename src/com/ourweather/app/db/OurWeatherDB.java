@@ -12,9 +12,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * 所有有关数据库的操作都放在此类中，该类实现数据库与外部交互的功能
+ * @author yue
+ *
+ */
 public class OurWeatherDB {
 
-	public static final String DB_NAME = "our_weather";
+	public static final String DB_NAME = "Our_Weather.db";
 
 	public static final int VERSION = 1;
 
@@ -150,8 +155,7 @@ public class OurWeatherDB {
 
 	/**
 	 * 外部加载数据库中county的数据
-	 */
-	
+	 */	
 	public List<County> loadCounties(int cityId){
 		List<County> counties = new ArrayList<County>();
 		Cursor cursor = DB.query("county", null, "city_id = ? ", new String []{String.valueOf(cityId)}, null,null,null);

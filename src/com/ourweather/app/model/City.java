@@ -1,5 +1,10 @@
 package com.ourweather.app.model;
 
+/**
+ * 数据库中城市对应的实体类
+ * @author yue
+ *
+ */
 public class City {
 	private int id;
 	private String city_Name;

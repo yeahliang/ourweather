@@ -61,17 +61,25 @@ public class ChooseAreaActivity extends Activity {
 
 	private Province mSelectProvince = null;
 
+	private boolean isFromShowWeatherActivity = false;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//判断是不是存有某县城的信息，有就直接进入天气界面
-		SharedPreferences sharedpref = PreferenceManager.getDefaultSharedPreferences(this);
-		if (sharedpref.getBoolean("city_selected", false)) {
-			Intent intent = new Intent(ChooseAreaActivity.this,showWeatherActivity.class);
+		// 判断是不是存有某县城的信息，有就直接进入天气界面
+		SharedPreferences sharedpref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		isFromShowWeatherActivity = getIntent().getBooleanExtra(
+				"from_ShowWeatherActivity", false);
+		if (sharedpref.getBoolean("city_selected", false)
+				&& isFromShowWeatherActivity == false) {
+			Intent intent = new Intent(ChooseAreaActivity.this,
+					showWeatherActivity.class);
 			startActivity(intent);
-			//finish();
+			finish();
+			return;
 		}
-		
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉原默认的标题栏
 		setContentView(R.layout.activity_area_choose);
 
@@ -110,7 +118,7 @@ public class ChooseAreaActivity extends Activity {
 							showWeatherActivity.class);
 					intent.putExtra("county_code", county.getCounty_Code());
 					startActivity(intent);
-					//finish();
+					finish();
 				}
 			}
 
@@ -265,15 +273,18 @@ public class ChooseAreaActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		if (mCurrentLevel == LEVEL_PROVINCE) {
-			super.onBackPressed();
-		} else if (mCurrentLevel == LEVEL_CITY) {
+		if (mCurrentLevel == LEVEL_CITY) {
 			queryProvinces();
 			mCurrentLevel = LEVEL_PROVINCE;
 		} else if (mCurrentLevel == LEVEL_COUNTY) {
 			queryCities(mSelectProvince);
 			mCurrentLevel = LEVEL_CITY;
+		} else {
+			if (isFromShowWeatherActivity) {
+				startActivity(new Intent(this, showWeatherActivity.class));
+			}
+			finish();//防止过快点击返回键
 		}
-
 	}
+
 }

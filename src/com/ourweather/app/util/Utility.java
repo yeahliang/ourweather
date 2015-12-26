@@ -156,12 +156,12 @@ public class Utility {
 					.getDefaultSharedPreferences(context).edit();
 			editor.putBoolean("city_selected", true);//标志是不是选到了city
 			editor.putString("city_name", city_Name);
-			editor.putString("cityid", city_Id);
+			editor.putString("weather_code", city_Id);
 			editor.putString("temp1", temp1);
 			editor.putString("temp2", temp2);
 			editor.putString("weather", weather);
 			editor.putString("ptime", ptime);
-			Log.d("TAG", "55555555555555555555555555");
+			Log.d("TAG", "55555555555555555555555555"+city_Name);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日",
 					Locale.CHINA);
 			Log.d("TAG", "666666666666666666");

@@ -5,17 +5,24 @@ import com.ourweather.app.util.HttpCallbackListener;
 import com.ourweather.app.util.HttpUtil;
 import com.ourweather.app.util.Utility;
 
+import android.R.integer;
+import android.R.string;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class showWeatherActivity extends Activity {
+public class showWeatherActivity extends Activity implements OnClickListener {
 
 	private TextView mTitleTextView = null;
 
@@ -27,16 +34,28 @@ public class showWeatherActivity extends Activity {
 
 	private TextView mUpdateTimeTextView = null;
 
+	private Button mChangeCityButton = null;
+
+	private Button mUpdateWeatherButton = null;
+	
+	private ProgressDialog mProgressDialog =null;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉标题，必须在加载布局文件前执行
 		setContentView(R.layout.activity_weather_show);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		mTitleTextView = (TextView) findViewById(R.id.tv_county_name);
 		mTempTextView = (TextView) findViewById(R.id.tv_temp_show);
 		mWeatherTextView = (TextView) findViewById(R.id.tv_weather_show);
 		mCurrentDateTextView = (TextView) findViewById(R.id.tv_current_date);
 		mUpdateTimeTextView = (TextView) findViewById(R.id.tv_update_time);
+		mChangeCityButton = (Button) findViewById(R.id.bt_change_city);
+		mUpdateWeatherButton = (Button) findViewById(R.id.bt_update_weather);
+		mChangeCityButton.setOnClickListener(this);
+		mUpdateWeatherButton.setOnClickListener(this);
+
 		// 判断是不是从选县城的Activity过来的
 		String county_code = getIntent().getStringExtra("county_code");
 		Log.d("TAG", "county_code------>" + county_code);
@@ -46,6 +65,32 @@ public class showWeatherActivity extends Activity {
 			queryWeather(county_code);
 		}
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.bt_change_city:
+			Intent intent = new Intent(this, ChooseAreaActivity.class);
+			intent.putExtra("from_ShowWeatherActivity", true);
+			startActivity(intent);
+			finish();
+			break;
+		case R.id.bt_update_weather:
+			SharedPreferences sharedPreferences = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			String weatherCode = sharedPreferences
+					.getString("weather_code", "");
+			showProgressDailog();
+			if (!TextUtils.isEmpty(weatherCode)) {
+				queryWeatherByCode(weatherCode);
+			}
+
+			break;
+		default:
+			break;
+		}
 	}
 
 	/**
@@ -84,11 +129,13 @@ public class showWeatherActivity extends Activity {
 								}
 							}
 						} else if ("weather_code".equals(type)) {
-							//存储天气信息
-							Utility.handleWeatherResponse(showWeatherActivity.this, response);
+							// 存储天气信息
+							Utility.handleWeatherResponse(
+									showWeatherActivity.this, response);
 							Log.d("TAG", "111111111111111111111111");
 							runOnUiThread(new Runnable() {
 								public void run() {
+									closeProgressDialog();
 									showWeather();
 								}
 							});
@@ -100,7 +147,8 @@ public class showWeatherActivity extends Activity {
 						// TODO Auto-generated method stub
 						runOnUiThread(new Runnable() {
 							public void run() {
-								//不能再子线程使用Toast到UI线程
+								// 不能再子线程使用Toast到UI线程
+closeProgressDialog();
 								Toast.makeText(showWeatherActivity.this,
 										"获取天气失败", Toast.LENGTH_SHORT).show();
 
@@ -119,14 +167,32 @@ public class showWeatherActivity extends Activity {
 
 	private void showWeather() {
 		// TODO Auto-generated method stub
-		SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences spf = PreferenceManager
+				.getDefaultSharedPreferences(this);
 		mTitleTextView.setText(spf.getString("city_name", null));
-		String temp = spf.getString("temp1", null) +"~"+spf.getString("temp2", null);
+		String temp = spf.getString("temp2", null) + "~"
+				+ spf.getString("temp1", null);
 		mTempTextView.setText(temp);
 		mWeatherTextView.setText(spf.getString("weather", null));
 		mUpdateTimeTextView.setText(spf.getString("ptime", null));
 		mCurrentDateTextView.setText(spf.getString("current_date", null));
-		
+
 	}
 
+	private void showProgressDailog() {
+		// TODO Auto-generated method stub
+		if (mProgressDialog == null) {
+			mProgressDialog = new ProgressDialog(this);
+			mProgressDialog.setMessage("更新ing...");
+			mProgressDialog.setCanceledOnTouchOutside(false);
+		}
+		mProgressDialog.show();
+	}
+
+	private void closeProgressDialog() {
+		// TODO Auto-generated method stub
+		if (mProgressDialog != null) {
+			mProgressDialog.dismiss();
+		}
+	}
 }

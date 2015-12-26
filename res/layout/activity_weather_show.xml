@@ -10,13 +10,27 @@
         android:layout_weight="1"
         android:background="#484e61" >
 
+        <Button
+            android:id="@+id/bt_change_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="切换城市" />
+
         <TextView
             android:id="@+id/tv_county_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:textColor="#ffff"
-            android:text="县城名字" />
+            android:text="县城名字"
+            android:textColor="#ffff" />
+
+        <Button
+            android:id="@+id/bt_update_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="更新" />
     </RelativeLayout>
 
     <RelativeLayout

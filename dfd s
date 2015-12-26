@@ -1,0 +1,35 @@
+[33mcommit 55edb7b2752b726f2f1cf0dba2180826f5c0251a[m
+Author: Yue <648609483@qq.com>
+Date:   Sat Dec 26 21:46:16 2015 +0800
+
+    已完成第二阶段：加入天气显示功能
+
+[33mcommit 46aa89f060817faeeced6ee59a9b5e7e2d7aa5fb[m
+Author: Yue <648609483@qq.com>
+Date:   Fri Dec 25 02:50:44 2015 +0800
+
+    完成遍历省市县三级列表的功能
+
+[33mcommit 14c9ceb7781c9b80aee3214f7510574114ab0a89[m
+Author: Yue <648609483@qq.com>
+Date:   Wed Dec 23 11:49:48 2015 +0800
+
+    新增数据库帮助类（OurWeatherOpenHelp.java），及各表对应的实体类，及存储和外部加载该实体类存储情况
+
+[33mcommit 19d5eb9b6c6f46d1532d58279f4d69bb4f33870b[m
+Author: Yue <648609483@qq.com>
+Date:   Mon Dec 21 22:48:41 2015 +0800
+
+    First commit
+
+[33mcommit 5d9a0b53fadb2f070ce9c3a90c7b3d73ca98344d[m
+Author: Yue <648609483@qq.com>
+Date:   Mon Dec 21 21:34:43 2015 +0800
+
+    Version 1.0
+
+[33mcommit 74ff4360108073a18b8292b18e36ab1835704252[m
+Author: yeahliang <921239261@qq.com>
+Date:   Mon Dec 21 21:21:40 2015 +0800
+
+    Initial commit

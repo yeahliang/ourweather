@@ -16,7 +16,10 @@ import android.R.anim;
 import android.R.integer;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -55,12 +58,20 @@ public class ChooseAreaActivity extends Activity {
 	private OurWeatherDB DB = null;
 
 	private ProgressDialog mProgressDialog = null;
-	
-	private Province mSelectProvince=null;
+
+	private Province mSelectProvince = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//判断是不是存有某县城的信息，有就直接进入天气界面
+		SharedPreferences sharedpref = PreferenceManager.getDefaultSharedPreferences(this);
+		if (sharedpref.getBoolean("city_selected", false)) {
+			Intent intent = new Intent(ChooseAreaActivity.this,showWeatherActivity.class);
+			startActivity(intent);
+			//finish();
+		}
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);// 去掉原默认的标题栏
 		setContentView(R.layout.activity_area_choose);
 
@@ -85,14 +96,21 @@ public class ChooseAreaActivity extends Activity {
 					Log.d("TAG", selectProvince.getProvince_Name());
 					// 根据省份，查看相应的县城信息
 					queryCities(selectProvince);
-					Log.d("TAG", selectProvince.getProvince_Name()+"  之后");
-				}
-				else if (mCurrentLevel == LEVEL_CITY) { //不能漏掉else啊
+					Log.d("TAG", selectProvince.getProvince_Name() + "  之后");
+				} else if (mCurrentLevel == LEVEL_CITY) { // 不能漏掉else啊
 					Log.d("TAG", "Show Province");
 					City selectCity = mListCiies.get(index);
-					
+
 					queryCounties(selectCity);
 					Log.d("TAG", selectCity.getCity_Name());
+				} else if (mCurrentLevel == LEVEL_COUNTY) {
+					County county = mListCounties.get(index);
+					Log.d("TAG", "主界面进来看天气:----->" + county.getCounty_Name());
+					Intent intent = new Intent(ChooseAreaActivity.this,
+							showWeatherActivity.class);
+					intent.putExtra("county_code", county.getCounty_Code());
+					startActivity(intent);
+					//finish();
 				}
 			}
 
@@ -244,18 +262,18 @@ public class ChooseAreaActivity extends Activity {
 			mProgressDialog.dismiss();
 		}
 	}
-	
+
 	@Override
-	public void onBackPressed(){
+	public void onBackPressed() {
 		if (mCurrentLevel == LEVEL_PROVINCE) {
 			super.onBackPressed();
-		}else if(mCurrentLevel == LEVEL_CITY){
+		} else if (mCurrentLevel == LEVEL_CITY) {
 			queryProvinces();
 			mCurrentLevel = LEVEL_PROVINCE;
-		}else if(mCurrentLevel == LEVEL_COUNTY){
+		} else if (mCurrentLevel == LEVEL_COUNTY) {
 			queryCities(mSelectProvince);
 			mCurrentLevel = LEVEL_CITY;
 		}
-		
+
 	}
 }

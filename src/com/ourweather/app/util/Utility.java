@@ -1,7 +1,18 @@
 package com.ourweather.app.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.json.JSONObject;
+
 import android.R.string;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.ourweather.app.db.OurWeatherDB;
 import com.ourweather.app.model.City;
@@ -104,6 +115,68 @@ public class Utility {
 		}
 
 		return false;
+	}
+
+	/**
+	 * 对服务器的天气数据进行解析
+	 * 
+	 * @param context
+	 * @param response
+	 */
+	public static void handleWeatherResponse(Context context, String response) {
+		try {
+			Log.d("TAG", "22222222222222222222222222");
+			JSONObject jsonObject = new JSONObject(response);
+			JSONObject joWeather = jsonObject.getJSONObject("weatherinfo");
+
+			saveWeatherInfo(context, joWeather);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 以SharedPreference的格式存储天气数据
+	 * @param context
+	 * @param joWeather
+	 */
+	private static void saveWeatherInfo(Context context, JSONObject joWeather) {
+		try {
+			// TODO Auto-generated method stub
+			String city_Name = joWeather.getString("city");
+			String city_Id = joWeather.getString("cityid");
+			String temp1 = joWeather.getString("temp1");
+			String temp2 = joWeather.getString("temp2");
+			String weather = joWeather.getString("weather");
+			String ptime = joWeather.getString("ptime");
+			Log.d("TAG", "3333333333333333333333");
+			SharedPreferences.Editor editor = (Editor) PreferenceManager
+					.getDefaultSharedPreferences(context).edit();
+			editor.putBoolean("city_selected", true);//标志是不是选到了city
+			editor.putString("city_name", city_Name);
+			editor.putString("cityid", city_Id);
+			editor.putString("temp1", temp1);
+			editor.putString("temp2", temp2);
+			editor.putString("weather", weather);
+			editor.putString("ptime", ptime);
+			Log.d("TAG", "55555555555555555555555555");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日",
+					Locale.CHINA);
+			Log.d("TAG", "666666666666666666");
+			editor.putString("current_date", sdf.format(new Date()));
+			Log.d("TAG", sdf.format(new Date()));
+
+			editor.commit();// 存储最新的一个天气
+			
+			Log.d("TAG", "Utility.saveWeatherInfo()被执行了");
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			Log.d("TAG", "4444444444444444444444444444");
+			e.printStackTrace();
+		}
 	}
 
 }

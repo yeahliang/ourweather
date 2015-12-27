@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:background="@drawable/home"
             android:text="切换城市" />
 
         <TextView
@@ -30,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:background="@drawable/refresh"
             android:text="更新" />
     </RelativeLayout>
 

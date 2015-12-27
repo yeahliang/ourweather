@@ -21,8 +21,11 @@ import android.widget.Toast;
 
 public class AutoUpdateServer extends Service {
 	private int flag = 0;
-
-	private final long UPDATE_EACH_TIME = SystemClock.elapsedRealtime() + 1000 * 5;
+	private Notification notification;
+	/**
+	 * 更新时间间隔
+	 */
+	private final long UPDATE_EACH_TIME = SystemClock.elapsedRealtime() + 1000 * 60 * 3;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -33,9 +36,12 @@ public class AutoUpdateServer extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
+		// notification = new Notification(R.drawable.ic_launcher,"OurWeather",
+		// System.currentTimeMillis());
+		notification = new Notification();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// 新线程更新weather
@@ -56,21 +62,32 @@ public class AutoUpdateServer extends Service {
 		manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, UPDATE_EACH_TIME, pi);
 
 		Toast.makeText(this, "服务后台执行ing", Toast.LENGTH_SHORT).show();
-		// 前台显示天气信息
+
+		showNotification();// 前台显示天气信息
+
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	/**
+	 * 前台显示天气信息
+	 */
+	private void showNotification() {
+
 		SharedPreferences spf = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		String cityName = spf.getString("city_name", "");
 		String temp = spf.getString("temp2", null) + "~"
 				+ spf.getString("temp1", null);
-		Notification notification = new Notification(R.drawable.ic_launcher,
-				"OurWeather", System.currentTimeMillis());
-		notification.setLatestEventInfo(this, cityName + " ---->第 "
-				+ (flag + 1) + "次更新", temp, null);
-		this.startForeground(++flag, notification);
+		String weatherString = spf.getString("weather", "");
 
-		return super.onStartCommand(intent, flags, startId);
+		notification.setLatestEventInfo(this, cityName + " ---->第 "
+				+ (flag + 1) + "次更新", temp + "   " + weatherString, null);
+		this.startForeground(++flag, notification);
 	}
 
+	/**
+	 * 从网上下载最新天气数据
+	 */
 	private void updateWeather() {
 		SharedPreferences spf = PreferenceManager
 				.getDefaultSharedPreferences(this);

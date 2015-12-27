@@ -27,6 +27,12 @@
         </activity>
         <activity android:name="com.ourweather.app.activity.showWeatherActivity" >
         </activity>
+
+        <service android:name="com.ourweather.app.service.AutoUpdateServer" >
+        </service>
+
+        <receiver android:name="com.ourweather.app.receiver.AlarmReceiver" >
+        </receiver>
     </application>
 
 </manifest>

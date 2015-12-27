@@ -118,7 +118,7 @@ public class Utility {
 	}
 
 	/**
-	 * 对服务器的天气数据进行解析
+	 * 对服务器的天气数据进行解析并存储
 	 * 
 	 * @param context
 	 * @param response

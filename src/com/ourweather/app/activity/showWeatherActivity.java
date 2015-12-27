@@ -1,6 +1,7 @@
 package com.ourweather.app.activity;
 
 import com.ourweather.app.R;
+import com.ourweather.app.service.AutoUpdateServer;
 import com.ourweather.app.util.HttpCallbackListener;
 import com.ourweather.app.util.HttpUtil;
 import com.ourweather.app.util.Utility;
@@ -11,6 +12,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -104,7 +106,25 @@ public class showWeatherActivity extends Activity implements OnClickListener {
 				+ county_code + ".xml";
 		queryFromServer(address, "county_code");
 	}
+	
 
+	/**
+	 * 由天气代号查询天气信息
+	 * @param weather_code
+	 */
+	private void queryWeatherByCode(String weather_code) {
+		// TODO Auto-generated method stub
+		String address = "http://www.weather.com.cn/data/cityinfo/"
+				+ weather_code + ".html";
+		queryFromServer(address, "weather_code");
+	}
+
+	/**
+	 * 从服务器查询天气号或者天气信息
+	 * 
+	 * @param address
+	 * @param type
+	 */
 	private void queryFromServer(final String address, final String type) {
 		// TODO Auto-generated method stub
 		HttpUtil.sendRequestByHttpURLConnection(address,
@@ -158,13 +178,10 @@ closeProgressDialog();
 				});
 	}
 
-	protected void queryWeatherByCode(String weather_code) {
-		// TODO Auto-generated method stub
-		String address = "http://www.weather.com.cn/data/cityinfo/"
-				+ weather_code + ".html";
-		queryFromServer(address, "weather_code");
-	}
 
+	/**
+	 * 查询已经下载并存储好的天气信息
+	 */
 	private void showWeather() {
 		// TODO Auto-generated method stub
 		SharedPreferences spf = PreferenceManager
@@ -176,7 +193,9 @@ closeProgressDialog();
 		mWeatherTextView.setText(spf.getString("weather", null));
 		mUpdateTimeTextView.setText(spf.getString("ptime", null));
 		mCurrentDateTextView.setText(spf.getString("current_date", null));
-
+		
+		Intent serverIntent = new Intent(showWeatherActivity.this,AutoUpdateServer.class);
+		startService(serverIntent);
 	}
 
 	private void showProgressDailog() {
